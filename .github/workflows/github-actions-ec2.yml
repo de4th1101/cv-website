@@ -11,20 +11,12 @@ jobs:
 
     steps:
       - name: Checkout the files
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Deploy to Server 1
-        uses: easingthemes/ssh-deploy@main
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.HOST_DNS }}
-          REMOTE_USER: ${{ secrets.USERNAME }}
-          TARGET: ${{ secrets.TARGET_DIR }}
-
-      - name: Executing remote commands via SSH
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.HOST_DNS }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script_path: scripts/script.sh
+      - name: Copy files to EC2
+        env: 
+          SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+        run:
+          echo "$SSH_KEY" > ec2_key.pem
+          chmod 600 ec2_key.pem
+          scp * -i ec2_key.pem ubuntu@18.199.179.195 /var/www/html
