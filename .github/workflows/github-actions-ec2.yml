@@ -19,4 +19,5 @@ jobs:
         run:
           echo "$SSH_KEY" > ec2_key.pem
           chmod 600 ec2_key.pem
-          scp -i ec2_key.pem -o StrictHostKeyChecking=no -r ./* ubuntu@18.199.179.195:/var/www/html
+          ssh -i ec2_key.pem ubuntu@18.199.179.195:/var/www/html/
+          git clone https://github.com/de4th1101/cv-website.git
