@@ -1,0 +1,22 @@
+name: Web Server CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the files
+        uses: actions/checkout@v4
+
+      - name: Copy files to EC2
+        env: 
+          SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+        run: |
+          echo "$SSH_KEY" >> ec2_key.pem
+          chmod 600 ec2_key.pem
+          scp -i ec2_key.pem -o StrictHostKeyChecking=no * ubuntu@18.199.179.195:/var/www/html/
